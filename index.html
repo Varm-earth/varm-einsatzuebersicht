@@ -838,8 +838,9 @@
 
   // ---- Live-Daten via data/einsaetze.json (Fallback für eigenständiges Hosting, z.B. GitHub Pages) ----
   // Diese Datei wird nicht von Hand gepflegt, sondern von einer Make-Automation regelmäßig
-  // aus dem Google Sheet geschrieben. Erwartetes Format: JSON-Array von Objekten mit den
-  // Feldern date, techName, techPhone, customer, address, type, start, end, duration.
+  // aus dem Google Sheet geschrieben. Erwartetes Format: JSON-Array von Objekten, jedes Objekt
+  // 1:1 wie eine Sheet-Zeile mit den Feldern date, tech (Name · Telefon kombiniert, wie in der
+  // Sheet-Spalte "Tech Checker"), customer, address, type, start, end, duration.
   async function tryLoadDataJson() {
     try {
       const res = await fetch("data/einsaetze.json", { cache: "no-store" });
@@ -847,12 +848,13 @@
       const json = await res.json();
       if (!Array.isArray(json)) return false;
       const rows = json.map(r => {
+        const [techName, techPhone] = String(r.tech || "").split("·").map(s => (s || "").trim());
         const duration = (r.duration === null || r.duration === undefined || r.duration === "")
           ? null : Math.round(Number(r.duration));
         return {
           date: r.date || "",
-          techName: r.techName || "Unbekannt",
-          techPhone: r.techPhone || "",
+          techName: techName || r.tech || "Unbekannt",
+          techPhone: techPhone || "",
           customer: r.customer || "",
           address: r.address || "",
           type: r.type || "",
