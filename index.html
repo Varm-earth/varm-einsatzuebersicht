@@ -837,10 +837,15 @@
   document.getElementById("liveLabel").textContent = "Statisch";
 
   // ---- Live-Daten via data/einsaetze.json (Fallback für eigenständiges Hosting, z.B. GitHub Pages) ----
-  // Diese Datei wird nicht von Hand gepflegt, sondern von einer Make-Automation regelmäßig
-  // aus dem Google Sheet geschrieben. Erwartetes Format: JSON-Array von Objekten, jedes Objekt
-  // 1:1 wie eine Sheet-Zeile mit den Feldern date, tech (Name · Telefon kombiniert, wie in der
-  // Sheet-Spalte "Tech Checker"), customer, address, type, start, end, duration.
+  // Diese Datei wird nicht von Hand gepflegt, sondern von einer Make-Automation (Array Aggregator
+  // über die Google-Sheets-Zeilen) regelmäßig geschrieben. Jedes Array-Element behält dabei
+  // einfach die Original-Spaltennamen aus dem Sheet (z.B. "Datum", "Tech Checker", "Insulation
+  // type", "Dauer (Min)") — findKey() sucht sie unabhängig von Groß-/Kleinschreibung, genau wie
+  // parseSheet() es beim Markdown-Header schon tut.
+  function findKey(obj, needle) {
+    const key = Object.keys(obj).find(k => k.toLowerCase().includes(needle));
+    return key ? obj[key] : undefined;
+  }
   async function tryLoadDataJson() {
     try {
       const res = await fetch("data/einsaetze.json", { cache: "no-store" });
@@ -848,18 +853,20 @@
       const json = await res.json();
       if (!Array.isArray(json)) return false;
       const rows = json.map(r => {
-        const [techName, techPhone] = String(r.tech || "").split("·").map(s => (s || "").trim());
-        const duration = (r.duration === null || r.duration === undefined || r.duration === "")
-          ? null : Math.round(Number(r.duration));
+        const techRaw = findKey(r, "tech") || "";
+        const [techName, techPhone] = String(techRaw).split("·").map(s => (s || "").trim());
+        const durRaw = findKey(r, "dauer");
+        const duration = (durRaw === null || durRaw === undefined || durRaw === "")
+          ? null : Math.round(Number(durRaw));
         return {
-          date: r.date || "",
-          techName: techName || r.tech || "Unbekannt",
+          date: findKey(r, "datum") || "",
+          techName: techName || techRaw || "Unbekannt",
           techPhone: techPhone || "",
-          customer: r.customer || "",
-          address: r.address || "",
-          type: r.type || "",
-          start: r.start || "",
-          end: r.end || "",
+          customer: findKey(r, "customer") || "",
+          address: findKey(r, "address") || "",
+          type: findKey(r, "insulation") || "",
+          start: findKey(r, "start") || "",
+          end: findKey(r, "ende") || "",
           duration,
           isOutlier: duration !== null && duration < OUTLIER_MIN_MINUTES,
         };
