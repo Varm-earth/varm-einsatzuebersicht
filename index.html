@@ -1,0 +1,880 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Einsatzübersicht</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root {
+    color-scheme: light;
+    --bg:            #ffffff;
+    --surface:       #ffffff;
+    --surface-2:     #f3f4f6;
+    --ink:           #0b0d12;
+    --ink-soft:      #4b5563;
+    --muted:         #8a8f98;
+    --gridline:      #e7e8ec;
+    --border:        rgba(11,13,18,0.12);
+    --navy:          #0d111d;
+    --accent:        #3fff75;
+    --accent-deep:   #12864a;
+    --accent-ink:    #0d111d;
+    --good:          #0ca30c;
+    --critical:      #d03b3b;
+    --s1: #2a78d6; /* Techniker-Farbe 1 (blau) */
+    --s2: #1baf7a; /* Techniker-Farbe 2 (aqua) */
+    --s3: #eda100; /* Techniker-Farbe 3 (gelb) */
+    --s4: #e87ba4; /* Techniker-Farbe 4 (magenta) */
+    --s5: #7a5c00; /* Techniker-Farbe 5 (oliv, statt Grün — Verwechslung mit Markenfarbe vermeiden) */
+    --s6: #4a3aa7; /* Techniker-Farbe 6 (violett) */
+    --s7: #e34948; /* Techniker-Farbe 7 (rot) */
+    --shadow: 0 1px 2px rgba(11,13,18,0.04), 0 8px 24px -10px rgba(11,13,18,0.12);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg:            #0d111d;
+      --surface:       #12151f;
+      --surface-2:     #1a1e2a;
+      --ink:           #ffffff;
+      --ink-soft:      #b7bcc8;
+      --muted:         #7c8190;
+      --gridline:      #262b38;
+      --border:        rgba(255,255,255,0.12);
+      --navy:          #000000;
+      --accent:        #3fff75;
+      --accent-deep:   #33cf68;
+      --accent-ink:    #0d111d;
+      --good:          #2fbf2f;
+      --critical:      #e66767;
+      --s1: #3987e5; --s2: #199e70; --s3: #c98500; --s4: #d55181;
+      --s5: #a68a1f; --s6: #9085e9; --s7: #e66767;
+      --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 10px 30px -10px rgba(0,0,0,0.7);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg:            #0d111d;
+    --surface:       #12151f;
+    --surface-2:     #1a1e2a;
+    --ink:           #ffffff;
+    --ink-soft:      #b7bcc8;
+    --muted:         #7c8190;
+    --gridline:      #262b38;
+    --border:        rgba(255,255,255,0.12);
+    --navy:          #000000;
+    --accent:        #3fff75;
+    --accent-deep:   #33cf68;
+    --accent-ink:    #0d111d;
+    --good:          #2fbf2f;
+    --critical:      #e66767;
+    --s1: #3987e5; --s2: #199e70; --s3: #c98500; --s4: #d55181;
+    --s5: #a68a1f; --s6: #9085e9; --s7: #e66767;
+    --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 10px 30px -10px rgba(0,0,0,0.7);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  img { max-width: 100%; }
+  [hidden] { display: none !important; }
+  .mono { font-family: "IBM Plex Mono", ui-monospace, "SF Mono", monospace; font-variant-numeric: tabular-nums; }
+
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 28px 64px; }
+
+  .brand-stripe { height: 3px; background: var(--accent); }
+
+  header.top {
+    position: sticky; top: 0; z-index: 5;
+    background: color-mix(in oklab, var(--bg) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+  .top-inner {
+    max-width: 1180px; margin: 0 auto; padding: 18px 28px;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  }
+  .brand { display: flex; align-items: center; gap: 14px; }
+  .wordmark {
+    font-weight: 800; font-size: 16px; letter-spacing: -0.02em; color: var(--ink);
+    text-transform: uppercase; font-style: italic;
+  }
+  .brand-divider { width: 1px; height: 20px; background: var(--border); }
+  .brand-titles { display: flex; flex-direction: column; gap: 1px; }
+  .brand h1 { font-size: 17px; font-weight: 700; margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
+  .brand .eyebrow {
+    font-size: 11px; letter-spacing: 0.06em; color: var(--muted); font-weight: 500;
+  }
+  .status-cluster { display: flex; align-items: center; gap: 14px; font-size: 12.5px; color: var(--ink-soft); }
+  .live-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px 4px 8px; border-radius: 6px;
+    border: 1px solid var(--border); background: var(--surface);
+  }
+  .live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+  .live-dot.idle { background: var(--muted); box-shadow: none; animation: none; }
+  .live-dot.live { animation: pulse 2.2s ease-in-out infinite; box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 25%, transparent); }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.45; } }
+  @media (prefers-reduced-motion: reduce) { .live-dot.live { animation: none; } }
+
+  .notice {
+    margin-top: 22px; padding: 12px 16px; border-radius: 8px;
+    background: color-mix(in oklab, var(--accent) 8%, var(--surface));
+    border: 1px solid color-mix(in oklab, var(--accent) 30%, var(--border));
+    color: var(--ink-soft); font-size: 13px; display: flex; gap: 10px; align-items: flex-start;
+  }
+  .notice strong { color: var(--ink); }
+  .notice svg { flex: none; margin-top: 2px; color: var(--accent-deep); }
+
+  .kpis {
+    margin-top: 24px;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+    background: var(--border); border: 1px solid var(--border); border-radius: 10px; overflow: hidden;
+  }
+  .kpi { background: var(--surface); padding: 18px 20px; }
+  .kpi .label { font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); font-weight: 600; }
+  .kpi .value { margin-top: 8px; font-size: 30px; font-weight: 700; letter-spacing: -0.01em; }
+  .kpi .value .unit { font-size: 15px; font-weight: 500; color: var(--ink-soft); margin-left: 3px; }
+  .kpi .sub { margin-top: 4px; font-size: 12px; color: var(--muted); }
+
+  .filters {
+    margin-top: 24px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+  }
+  .filters .fgroup { display: flex; align-items: center; gap: 8px; }
+  .filters label { font-size: 11.5px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+  select {
+    appearance: none; -webkit-appearance: none;
+    background: var(--surface); color: var(--ink);
+    border: 1px solid var(--border); border-radius: 6px;
+    padding: 7px 30px 7px 10px; font-size: 13px; font-family: inherit;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0l5 6 5-6z' fill='%238a8f98'/></svg>");
+    background-repeat: no-repeat; background-position: right 10px center;
+    cursor: pointer;
+  }
+  select:focus-visible, button:focus-visible, a:focus-visible { outline: 2px solid var(--accent-deep); outline-offset: 2px; }
+  .reset-btn {
+    margin-left: auto; font-size: 12.5px; color: var(--ink-soft); background: none; border: 1px solid var(--border);
+    border-radius: 6px; padding: 7px 12px; cursor: pointer; font-family: inherit;
+  }
+  .reset-btn:hover { border-color: var(--accent-deep); color: var(--ink); }
+
+  .panels-row {
+    margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start;
+  }
+  @media (max-width: 780px) { .panels-row { grid-template-columns: 1fr; } }
+
+  .panel {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    box-shadow: var(--shadow); margin-top: 20px;
+  }
+  .panels-row .panel { margin-top: 0; }
+  .panel-head {
+    padding: 16px 20px 0; display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap;
+  }
+  .panel-head h2 { font-size: 14.5px; margin: 0; font-weight: 600; }
+  .panel-head .hint { font-size: 11.5px; color: var(--muted); }
+  .panel-body { padding: 14px 20px 20px; }
+
+  .bars { display: flex; flex-direction: column; gap: 14px; }
+  .bar-row { display: grid; grid-template-columns: 108px 1fr auto; align-items: center; gap: 10px; }
+  .bar-name { font-size: 12.5px; color: var(--ink); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bar-track { height: 10px; border-radius: 4px; background: var(--surface-2); position: relative; }
+  .bar-fill { position: absolute; inset: 0 auto 0 0; border-radius: 4px; min-width: 4px; max-width: 100%; }
+  .bar-marker { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--ink); opacity: 0.35; transform: translateX(-50%); }
+  .bar-marker.target { width: 3px; opacity: 0.8; }
+  .bar-val { font-size: 12px; color: var(--ink-soft); text-align: right; white-space: nowrap; }
+  .bar-val .n { color: var(--muted); }
+  .bar-val .delta { display: block; font-size: 10.5px; color: var(--muted); }
+  .bars-empty { color: var(--muted); font-size: 13px; padding: 20px 0; text-align: center; }
+  .chart-legend-note { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--gridline); font-size: 11.5px; color: var(--muted); }
+  .chart-legend-note .swatch-line { display: inline-block; width: 12px; height: 2px; background: var(--ink); opacity: 0.35; vertical-align: middle; margin: 0 4px; }
+
+  .richtwert-chip {
+    font-size: 10.5px; color: var(--ink-soft); background: var(--surface-2);
+    border: 1px solid var(--border); border-radius: 6px; padding: 1px 8px; white-space: nowrap;
+  }
+  .richtwert-chip sup { cursor: help; }
+  .richtwert-chip.target.under { color: var(--ink-soft); border-color: var(--border); }
+  .richtwert-chip.target.over { color: var(--critical); border-color: color-mix(in oklab, var(--critical) 40%, var(--border)); }
+
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  .visits-table { min-width: 720px; }
+  thead th {
+    text-align: left; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--muted); font-weight: 600; padding: 0 12px 10px; border-bottom: 1px solid var(--gridline);
+    white-space: nowrap; background: var(--surface);
+  }
+  tbody td { padding: 11px 12px; border-bottom: 1px solid var(--gridline); font-size: 13px; vertical-align: top; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: var(--surface-2); }
+  .who { display: flex; flex-direction: column; gap: 2px; }
+  .who .name { font-weight: 500; }
+  .who a { color: var(--ink-soft); font-size: 11.5px; text-decoration: none; }
+  .who a:hover { color: var(--accent-deep); text-decoration: underline; }
+  .addr { color: var(--ink-soft); font-size: 12px; max-width: 220px; }
+  .swatch { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 7px; flex: none; margin-top: 4px; }
+  .tech-cell { display: flex; align-items: flex-start; }
+  .type-chip {
+    display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 11.5px;
+    background: var(--surface-2); color: var(--ink-soft); border: 1px solid var(--border); white-space: nowrap;
+  }
+  .dur-ok { font-weight: 500; }
+  .dur-missing {
+    display: inline-flex; align-items: center; gap: 5px; color: var(--critical); font-size: 11.5px; font-weight: 600;
+  }
+  .dur-missing .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--critical); flex: none; }
+  .dur-outlier { display: inline-flex; flex-direction: column; align-items: flex-end; gap: 3px; }
+  .outlier-tag {
+    font-size: 10px; color: var(--critical); background: color-mix(in oklab, var(--critical) 10%, var(--surface));
+    border: 1px solid color-mix(in oklab, var(--critical) 35%, var(--border)); border-radius: 6px; padding: 0 6px; white-space: nowrap;
+  }
+  .empty-row td { text-align: center; color: var(--muted); padding: 36px 12px; }
+  .table-toggle-row { margin-top: 14px; display: flex; justify-content: center; }
+  .table-toggle-row .reset-btn { margin-left: 0; }
+
+  .trend-block { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--gridline); }
+  .trend-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+  .trend-head h3 { margin: 0; font-size: 12px; font-weight: 600; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.05em; }
+  .trend-legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+  .trend-legend-item { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; color: var(--ink-soft); }
+  .trend-legend-dot { width: 8px; height: 8px; border-radius: 2px; flex: none; }
+  .trend-svg { width: 100%; height: auto; display: block; margin-top: 10px; }
+  .trend-grid { stroke: var(--gridline); stroke-width: 1; }
+  .trend-axis-label { font-size: 9px; fill: var(--muted); font-family: "IBM Plex Mono", monospace; }
+  .trend-empty { color: var(--muted); font-size: 12.5px; padding: 14px 0 2px; text-align: center; }
+
+  /* matrix */
+  .matrix-table th, .matrix-table td { padding: 9px 14px; text-align: center; border-bottom: 1px solid var(--gridline); font-size: 12.5px; }
+  .matrix-table thead th { position: static; }
+  .matrix-table th:first-child, .matrix-table td:first-child {
+    text-align: left; position: sticky; left: 0; background: var(--surface); font-weight: 500;
+  }
+  .matrix-table .col-total, .matrix-table .row-total { font-weight: 600; background: var(--surface-2) !important; }
+  .matrix-cell .avg { font-weight: 600; }
+  .matrix-cell .n { display: block; font-size: 10px; color: var(--muted); margin-top: 1px; }
+  .matrix-cell.empty { color: var(--muted); }
+  .matrix-foot { font-size: 11.5px; color: var(--muted); margin-top: 12px; }
+
+  footer {
+    margin-top: 26px; padding-top: 16px; border-top: 1px solid var(--gridline);
+    font-size: 11.5px; color: var(--muted); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand-stripe"></div>
+  <div class="top-inner">
+    <div class="brand">
+      <span class="wordmark">Varm</span>
+      <span class="brand-divider"></span>
+      <div class="brand-titles">
+        <h1>Einsatzübersicht</h1>
+        <span class="eyebrow">Dämmarbeiten · Außendienst</span>
+      </div>
+    </div>
+    <div class="status-cluster">
+      <span id="lastUpdated">Lade Daten…</span>
+      <span class="live-badge"><span class="live-dot idle" id="liveDot"></span><span id="liveLabel">Verbindet…</span></span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="notice" id="autoNotice" hidden>
+    <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.3"/><path d="M8 5v3.5M8 11h.01" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+    <span><strong>Automation noch nicht aktiv.</strong> Diese Ansicht zeigt den letzten Stand aus dem Sheet. Sobald Make neue Einsätze schreibt, aktualisiert sich das Dashboard automatisch.</span>
+  </div>
+
+  <section class="kpis" id="kpis" aria-label="Kennzahlen">
+    <div class="kpi"><div class="label">Einsätze</div><div class="value" id="kpiCount">–</div><div class="sub" id="kpiCountSub">&nbsp;</div></div>
+    <div class="kpi"><div class="label">Techniker</div><div class="value" id="kpiTechs">–</div><div class="sub">&nbsp;</div></div>
+    <div class="kpi"><div class="label">Ø Dauer gesamt</div><div class="value" id="kpiAvg">–</div><div class="sub" id="kpiAvgSub">&nbsp;</div></div>
+  </section>
+
+  <section class="filters" aria-label="Filter">
+    <div class="fgroup">
+      <label for="fDate">Datum</label>
+      <select id="fDate"><option value="">Alle</option></select>
+    </div>
+    <div class="fgroup">
+      <label for="fTech">Techniker</label>
+      <select id="fTech"><option value="">Alle</option></select>
+    </div>
+    <div class="fgroup">
+      <label for="fType">Dämmtyp</label>
+      <select id="fType"><option value="">Alle</option></select>
+    </div>
+    <button class="reset-btn" id="resetFilters">Filter zurücksetzen</button>
+  </section>
+
+  <section class="panels-row">
+    <div class="panel">
+      <div class="panel-head">
+        <h2>Ø Dauer pro Techniker</h2>
+        <span class="hint">Minuten, sortiert</span>
+      </div>
+      <div class="panel-body">
+        <div class="bars" id="barsTech"></div>
+        <div class="chart-legend-note" id="techLegendNote"></div>
+        <div class="trend-block">
+          <div class="trend-head"><h3>Verlauf über die Zeit</h3></div>
+          <div class="trend-legend" id="techTrendLegend"></div>
+          <div id="techTrend"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <h2>Ø Dauer pro Dämmtyp</h2>
+        <span class="hint">Minuten, sortiert</span>
+      </div>
+      <div class="panel-body">
+        <div class="bars" id="barsType"></div>
+        <div class="chart-legend-note" id="typeLegendNote"></div>
+        <div class="trend-block">
+          <div class="trend-head"><h3>Verlauf über die Zeit</h3></div>
+          <div class="trend-legend" id="typeTrendLegend"></div>
+          <div id="typeTrend"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>Ø Dauer: Techniker × Dämmtyp</h2>
+      <span class="hint">Wer braucht wofür wie lange</span>
+    </div>
+    <div class="panel-body table-scroll">
+      <table class="matrix-table" id="matrixTable"></table>
+      <div class="matrix-foot" id="matrixFoot"></div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>Einsätze</h2>
+      <span class="hint" id="tableCount">0 Zeilen</span>
+    </div>
+    <div class="panel-body table-scroll">
+      <table class="visits-table">
+        <thead>
+          <tr>
+            <th>Datum</th>
+            <th>Techniker</th>
+            <th>Kunde</th>
+            <th>Adresse</th>
+            <th>Dämmtyp</th>
+            <th>Start</th>
+            <th>Ende</th>
+            <th style="text-align:right">Dauer</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <div class="table-toggle-row"><button class="reset-btn" id="tableToggle" hidden></button></div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Quelle: Google Sheet · Make-Automation (Techniker-Check-in)</span>
+    <span>Aktualisiert alle 60 s, solange das Dashboard geöffnet ist</span>
+  </footer>
+</div>
+
+<script>
+  const FILE_ID = "1cdo6aB3w4BE-f30z-jBpHST7EJe4XLYkMn1KSpuz_7U";
+  const SERIES = ["--s1","--s2","--s3","--s4","--s5","--s6","--s7"];
+
+  // Offizielle Firmen-Richtwerte pro Dämmtyp (Minuten). Kellerdecke hat einen eigenen
+  // Wert, alle anderen Dämmtypen fallen auf DEFAULT_RICHTWERT zurück.
+  const COMPANY_RICHTWERTE = { "Kellerdecke": 75 };
+  const DEFAULT_RICHTWERT = 60;
+
+  // Termine unter dieser Dauer gelten als Ausreißer (z.B. Check-out-Fehler) und
+  // fließen nicht in Durchschnitte ein, werden in der Tabelle aber weiter angezeigt.
+  const OUTLIER_MIN_MINUTES = 3;
+
+  // ---- Beispiel-Snapshot (anonymisiert) ----
+  // Wird nur angezeigt, solange keine Live-Daten aus dem Google Sheet geladen sind.
+  const FALLBACK_MARKDOWN = "|  |  |  |  |  |  |  |  |\n| :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: |\n| Datum  | Tech Checker  | Customer | Address | Insulation type | Startzeit  | Endezeit  | Dauer (Min) |\n| 04-09-2026 | Techniker A | Kunde 1 | Musterstraße 11, 28211 Bremen | Kellerdecke | 04-09-2026 11:38 | 04-09-2026 12:40 | 62 |\n| 04-09-2026 | Techniker B | Kunde 2 | Musterweg 42, 15738 Zeuthen | Fassade | 04-09-2026 12:43 | 04-09-2026 13:33 | 50 |\n| 03-09-2026 | Techniker B | Kunde 3 | Beispielstraße 3, 16559 Liebenwalde | Fassade | 03-09-2026 10:24 | 03-09-2026 10:25 | 1 |\n| 03-09-2026 | Techniker B | Kunde 3 | Beispielstraße 3, 16559 Liebenwalde | Obere Geschossdecke | 03-09-2026 10:30 | 03-09-2026 10:47 | 17 |\n| 01-09-2026 | Techniker C | Kunde 4 | Beispielweg 3, 22119 Hamburg | Fassade | 01-09-2026 9:55 | 01-09-2026 10:21 | 26 |\n| 01-09-2026 | Techniker C | Kunde 5 | Musterallee 9, 21031 Hamburg | Fassade | 01-09-2026 11:00 | 01-09-2026 11:01 | 1 |\n| 07-09-2026 | Techniker B | Kunde 6 | Musterstraße 47, 15738 Zeuthen | Fassade | 07-09-2026 9:19 | 07-09-2026 9:47 | 28 |\n| 07-09-2026 | Techniker D | Kunde 7 | Beispielstraße 7, 42399 Wuppertal | Fassade | 07-09-2026 10:48 | 07-09-2026 10:49 | 1 |";
+
+  function parseSheet(markdown) {
+    const lines = markdown.split("\n").map(l => l.trim()).filter(Boolean);
+    const isSeparator = l => /^\|[\s:|-]+\|$/.test(l) && l.includes("-");
+    const isBlankRow = l => l.replace(/\|/g, "").trim() === "";
+    const rowLines = lines.filter(l => l.startsWith("|") && !isSeparator(l) && !isBlankRow(l));
+    if (rowLines.length < 2) return [];
+    const split = l => l.split("|").slice(1, -1).map(c => c.trim());
+    const header = split(rowLines[0]).map(h => h.toLowerCase());
+    const idx = key => header.findIndex(h => h.includes(key));
+    const iDate = idx("datum"), iTech = idx("tech"), iCust = idx("customer"),
+          iAddr = idx("address"), iType = idx("insulation"), iStart = idx("start"),
+          iEnd = idx("ende"), iDur = idx("dauer");
+
+    const raw = rowLines.slice(1).map(split).filter(c => c.length >= header.length && c[iDate]);
+
+    const parsed = raw.map(c => {
+      const [techName, techPhone] = (c[iTech] || "").split("·").map(s => (s || "").trim());
+      const durCell = (c[iDur] || "").trim();
+      const durMatch = durCell.match(/^\d+(\.\d+)?$/);
+      const duration = durMatch ? Math.round(parseFloat(durMatch[0])) : null;
+      return {
+        date: c[iDate],
+        techName: techName || c[iTech] || "Unbekannt",
+        techPhone: techPhone || "",
+        customer: c[iCust] || "",
+        address: c[iAddr] || "",
+        type: c[iType] || "",
+        start: c[iStart] || "",
+        end: c[iEnd] || "",
+        duration,
+        isOutlier: duration !== null && duration < OUTLIER_MIN_MINUTES,
+      };
+    });
+
+    const groups = new Map();
+    for (const row of parsed) {
+      const key = [row.date, row.techName, row.techPhone, row.customer, row.address, row.type, row.start, row.end].join("|");
+      const existing = groups.get(key);
+      if (!existing || (existing.duration === null && row.duration !== null)) {
+        groups.set(key, row);
+      }
+    }
+    return Array.from(groups.values());
+  }
+
+  function fmtDate(d) { return d ? d.split("-").join(".") : "–"; }
+  function fmtTime(t) { if (!t) return "–"; const parts = t.trim().split(" "); return parts[parts.length - 1]; }
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+  function telHref(phone) { return "tel:" + phone.replace(/[^\d+]/g, ""); }
+  function avg(nums) { return nums.length ? Math.round(nums.reduce((a, b) => a + b, 0) / nums.length) : null; }
+  function dateKey(d) { const [dd, mm, yyyy] = d.split("-"); return yyyy + mm + dd; }
+
+  let allRows = [];
+  let techColor = new Map();
+
+  function assignColors(rows) {
+    const names = Array.from(new Set(rows.map(r => r.techName))).sort();
+    techColor = new Map();
+    names.forEach((n, i) => techColor.set(n, SERIES[i % SERIES.length]));
+  }
+
+  function populateFilter(select, values, currentValue) {
+    const existing = new Set(Array.from(select.options).map(o => o.value));
+    values.forEach(v => {
+      if (!existing.has(v)) {
+        const opt = document.createElement("option");
+        opt.value = v; opt.textContent = v;
+        select.appendChild(opt);
+      }
+    });
+    if (currentValue && Array.from(select.options).some(o => o.value === currentValue)) {
+      select.value = currentValue;
+    }
+  }
+
+  function render(rows) {
+    allRows = rows;
+    assignColors(rows);
+
+    const fDate = document.getElementById("fDate");
+    const fTech = document.getElementById("fTech");
+    const fType = document.getElementById("fType");
+
+    const dates = Array.from(new Set(rows.map(r => r.date))).sort().reverse();
+    const techs = Array.from(new Set(rows.map(r => r.techName))).sort();
+    const types = Array.from(new Set(rows.map(r => r.type).filter(Boolean))).sort();
+
+    populateFilter(fDate, dates, fDate.value);
+    populateFilter(fTech, techs, fTech.value);
+    populateFilter(fType, types, fType.value);
+
+    applyFilters();
+  }
+
+  function applyFilters() {
+    const fDate = document.getElementById("fDate").value;
+    const fTech = document.getElementById("fTech").value;
+    const fType = document.getElementById("fType").value;
+
+    const filtered = allRows.filter(r =>
+      (!fDate || r.date === fDate) &&
+      (!fTech || r.techName === fTech) &&
+      (!fType || r.type === fType)
+    );
+
+    renderKpis(filtered);
+    renderTechBars(filtered);
+    renderTypeBars(filtered);
+    renderMatrix(filtered);
+    renderTable(filtered);
+  }
+
+  function renderKpis(rows) {
+    const withDur = rows.filter(r => r.duration !== null && !r.isOutlier);
+    const techCount = new Set(rows.map(r => r.techName)).size;
+    const overall = avg(withDur.map(r => r.duration));
+    const missingCount = rows.filter(r => r.duration === null).length;
+    const outlierCount = rows.filter(r => r.isOutlier).length;
+
+    document.getElementById("kpiCount").textContent = rows.length;
+    const subParts = [];
+    if (missingCount) subParts.push(missingCount + " ohne erfasste Dauer");
+    if (outlierCount) subParts.push(outlierCount + " Ausreißer ausgeschlossen");
+    document.getElementById("kpiCountSub").textContent = subParts.length ? subParts.join(" · ") : "alle Dauern erfasst";
+    document.getElementById("kpiTechs").textContent = techCount;
+    document.getElementById("kpiAvg").innerHTML = overall !== null ? overall + '<span class="unit">min</span>' : "–";
+    document.getElementById("kpiAvgSub").textContent = withDur.length ? "über " + withDur.length + " Einsätze" : "keine Daten";
+  }
+
+  function renderTechBars(rows) {
+    const el = document.getElementById("barsTech");
+    const note = document.getElementById("techLegendNote");
+    const withDur = rows.filter(r => r.duration !== null && !r.isOutlier);
+    if (!withDur.length) {
+      el.innerHTML = '<div class="bars-empty">Keine Dauer-Daten für diese Auswahl.</div>';
+      note.textContent = "";
+      return;
+    }
+    const overall = avg(withDur.map(r => r.duration));
+    const byTech = new Map();
+    withDur.forEach(r => { (byTech.get(r.techName) || byTech.set(r.techName, []).get(r.techName)).push(r.duration); });
+    const stats = Array.from(byTech.entries()).map(([name, durs]) => ({
+      name, avg: avg(durs), n: durs.length,
+    })).sort((a, b) => b.avg - a.avg);
+    const max = Math.max(...stats.map(s => s.avg), overall, 1);
+
+    el.innerHTML = stats.map(s => {
+      const color = "var(" + (techColor.get(s.name) || "--s1") + ")";
+      const pct = Math.max(4, Math.round((s.avg / max) * 100));
+      const markerPct = Math.min(100, Math.round((overall / max) * 100));
+      const delta = s.avg - overall;
+      const deltaStr = delta === 0 ? "genau Ø" : (delta > 0 ? "+" : "−") + Math.abs(delta) + " min ggü. Ø";
+      return '<div class="bar-row">' +
+        '<div class="bar-name" title="' + escapeHtml(s.name) + '">' + escapeHtml(s.name) + '</div>' +
+        '<div class="bar-track"><div class="bar-fill" style="width:' + pct + '%; background:' + color + '"></div>' +
+          '<div class="bar-marker" style="left:' + markerPct + '%"></div></div>' +
+        '<div class="bar-val mono">' + s.avg + ' min <span class="n">· n=' + s.n + '</span><span class="delta">' + deltaStr + '</span></div>' +
+        '</div>';
+    }).join("");
+    note.innerHTML = 'Strich <span class="swatch-line"></span> markiert den Gesamtdurchschnitt (' + overall + ' min). Ausreißer (< ' + OUTLIER_MIN_MINUTES + ' min) sind ausgeschlossen.';
+
+    renderTrend("techTrend", "techTrendLegend", withDur, r => r.techName, name => "var(" + (techColor.get(name) || "--s1") + ")");
+  }
+
+  function renderTypeBars(rows) {
+    const el = document.getElementById("barsType");
+    const withDur = rows.filter(r => r.duration !== null && !r.isOutlier && r.type);
+    if (!withDur.length) {
+      el.innerHTML = '<div class="bars-empty">Keine Dauer-Daten für diese Auswahl.</div>';
+      return;
+    }
+    const byType = new Map();
+    withDur.forEach(r => { (byType.get(r.type) || byType.set(r.type, []).get(r.type)).push(r.duration); });
+    const stats = Array.from(byType.entries()).map(([type, durs]) => {
+      const target = COMPANY_RICHTWERTE[type] !== undefined ? COMPANY_RICHTWERTE[type] : DEFAULT_RICHTWERT;
+      return { type, avg: avg(durs), n: durs.length, target };
+    }).sort((a, b) => b.avg - a.avg);
+    const max = Math.max(...stats.map(s => s.avg), ...stats.map(s => s.target), 1);
+
+    el.innerHTML = stats.map(s => {
+      const pct = Math.max(4, Math.round((s.avg / max) * 100));
+      const markerPct = Math.min(100, Math.round((s.target / max) * 100));
+      const diff = s.avg - s.target;
+      const diffClass = diff > 0 ? "over" : "under";
+      const diffStr = diff === 0 ? "im Soll" : (diff > 0 ? "+" + diff + " min über Soll" : diff + " min unter Soll");
+      const chipHtml = '<span class="richtwert-chip target ' + diffClass + '">Soll ' + s.target + ' min · ' + diffStr + '</span>';
+      return '<div class="bar-row">' +
+        '<div class="bar-name" title="' + escapeHtml(s.type) + '">' + escapeHtml(s.type) + '</div>' +
+        '<div class="bar-track"><div class="bar-fill" style="width:' + pct + '%; background:var(--accent-deep)"></div>' +
+          '<div class="bar-marker target" style="left:' + markerPct + '%" title="Soll: ' + s.target + ' min"></div></div>' +
+        '<div class="bar-val mono">' + s.avg + ' min <span class="n">· n=' + s.n + '</span>' +
+          '<span class="delta">' + chipHtml + '</span></div>' +
+        '</div>';
+    }).join("");
+    document.getElementById("typeLegendNote").innerHTML = 'Strich <span class="swatch-line"></span> markiert das jeweilige Soll · "Soll" = Firmenvorgabe (Kellerdecke 75 min, alle anderen Dämmtypen 60 min). Ausreißer (< ' + OUTLIER_MIN_MINUTES + ' min) sind ausgeschlossen.';
+
+    const typeColor = new Map();
+    stats.map(s => s.type).sort().forEach((t, i) => typeColor.set(t, SERIES[i % SERIES.length]));
+    renderTrend("typeTrend", "typeTrendLegend", withDur, r => r.type, name => "var(" + (typeColor.get(name) || "--s1") + ")");
+  }
+
+  function computeDailyAverages(rows, keyFn) {
+    const byEntity = new Map();
+    rows.forEach(r => {
+      const k = keyFn(r);
+      if (!k) return;
+      if (!byEntity.has(k)) byEntity.set(k, new Map());
+      const byDate = byEntity.get(k);
+      if (!byDate.has(r.date)) byDate.set(r.date, []);
+      byDate.get(r.date).push(r.duration);
+    });
+    const result = new Map();
+    for (const [k, byDate] of byEntity) {
+      const points = Array.from(byDate.entries())
+        .map(([date, durs]) => ({ date, avg: avg(durs) }))
+        .sort((a, b) => dateKey(a.date) < dateKey(b.date) ? -1 : 1);
+      result.set(k, points);
+    }
+    return result;
+  }
+
+  function renderTrend(chartId, legendId, rows, keyFn, colorFn) {
+    const el = document.getElementById(chartId);
+    const legendEl = document.getElementById(legendId);
+    const allDates = Array.from(new Set(rows.map(r => r.date))).sort((a, b) => dateKey(a) < dateKey(b) ? -1 : 1);
+
+    if (allDates.length < 2) {
+      el.innerHTML = '<div class="trend-empty">Noch zu wenig Verlauf (mind. 2 Tage) — füllt sich automatisch mit weiteren Einsätzen.</div>';
+      legendEl.innerHTML = "";
+      return;
+    }
+
+    const byEntity = computeDailyAverages(rows, keyFn);
+    const W = 600, H = 150, padL = 30, padR = 12, padT = 12, padB = 22;
+    const innerW = W - padL - padR, innerH = H - padT - padB;
+    const xFor = date => padL + (allDates.indexOf(date) / (allDates.length - 1)) * innerW;
+    let maxVal = 0;
+    byEntity.forEach(points => points.forEach(p => { maxVal = Math.max(maxVal, p.avg); }));
+    maxVal = Math.ceil((maxVal * 1.15) / 5) * 5 || 10;
+    const yFor = v => padT + innerH - (v / maxVal) * innerH;
+
+    let gridHtml = "";
+    for (let i = 0; i <= 3; i++) {
+      const v = Math.round((maxVal * i) / 3);
+      const y = yFor(v);
+      gridHtml += '<line x1="' + padL + '" y1="' + y + '" x2="' + (W - padR) + '" y2="' + y + '" class="trend-grid"/>';
+      gridHtml += '<text x="' + (padL - 6) + '" y="' + (y + 3) + '" class="trend-axis-label" text-anchor="end">' + v + '</text>';
+    }
+    const maxLabels = 6;
+    const stride = Math.max(1, Math.ceil(allDates.length / maxLabels));
+    let xLabelsHtml = allDates.map((d, i) =>
+      (i % stride === 0 || i === allDates.length - 1)
+        ? '<text x="' + xFor(d).toFixed(1) + '" y="' + (H - 6) + '" class="trend-axis-label" text-anchor="middle">' + escapeHtml(fmtDate(d)) + '</text>'
+        : ""
+    ).join("");
+
+    let linesHtml = "";
+    const names = Array.from(byEntity.keys()).sort();
+    names.forEach(name => {
+      const points = byEntity.get(name);
+      const color = colorFn(name);
+      const path = points.map((p, i) => (i === 0 ? "M" : "L") + xFor(p.date).toFixed(1) + "," + yFor(p.avg).toFixed(1)).join(" ");
+      linesHtml += '<path d="' + path + '" fill="none" stroke="' + color + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
+      points.forEach(p => {
+        linesHtml += '<circle cx="' + xFor(p.date).toFixed(1) + '" cy="' + yFor(p.avg).toFixed(1) + '" r="3" fill="' + color + '"/>';
+      });
+    });
+
+    el.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" class="trend-svg" role="img" aria-label="Verlauf der Durchschnittsdauer über die Zeit">' +
+      gridHtml + linesHtml + xLabelsHtml + '</svg>';
+
+    legendEl.innerHTML = names.map(name =>
+      '<span class="trend-legend-item"><span class="trend-legend-dot" style="background:' + colorFn(name) + '"></span>' + escapeHtml(name) + '</span>'
+    ).join("");
+  }
+
+  function renderMatrix(rows) {
+    const table = document.getElementById("matrixTable");
+    const foot = document.getElementById("matrixFoot");
+    const withDur = rows.filter(r => r.duration !== null && !r.isOutlier && r.type);
+
+    if (!withDur.length) {
+      table.innerHTML = "";
+      foot.textContent = "Keine Dauer-Daten für diese Auswahl.";
+      return;
+    }
+
+    const techs = Array.from(new Set(withDur.map(r => r.techName))).sort();
+    const types = Array.from(new Set(withDur.map(r => r.type))).sort();
+
+    const cellStats = (t, ty) => avg(withDur.filter(r => r.techName === t && r.type === ty).map(r => r.duration));
+    const cellN = (t, ty) => withDur.filter(r => r.techName === t && r.type === ty).length;
+
+    let allVals = [];
+    techs.forEach(t => types.forEach(ty => { const v = cellStats(t, ty); if (v !== null) allVals.push(v); }));
+    const lo = Math.min(...allVals), hi = Math.max(...allVals);
+    const shade = v => {
+      if (hi === lo) return "14%";
+      const p = (v - lo) / (hi - lo);
+      return Math.round(8 + p * 30) + "%";
+    };
+
+    let html = "<thead><tr><th>Techniker</th>";
+    types.forEach(ty => { html += "<th>" + escapeHtml(ty) + "</th>"; });
+    html += '<th class="col-total">Ø gesamt</th></tr></thead><tbody>';
+
+    techs.forEach(t => {
+      html += "<tr><td>" + escapeHtml(t) + "</td>";
+      types.forEach(ty => {
+        const v = cellStats(t, ty), n = cellN(t, ty);
+        if (v === null) {
+          html += '<td class="matrix-cell empty">–</td>';
+        } else {
+          html += '<td class="matrix-cell" style="background:color-mix(in oklab, var(--s1) ' + shade(v) + ', var(--surface))">' +
+            '<span class="avg mono">' + v + '</span><span class="n">n=' + n + '</span></td>';
+        }
+      });
+      const rowVals = withDur.filter(r => r.techName === t).map(r => r.duration);
+      html += '<td class="matrix-cell row-total"><span class="avg mono">' + avg(rowVals) + '</span><span class="n">n=' + rowVals.length + '</span></td>';
+      html += "</tr>";
+    });
+
+    html += '<tr><td class="col-total">Ø je Dämmtyp</td>';
+    types.forEach(ty => {
+      const vals = withDur.filter(r => r.type === ty).map(r => r.duration);
+      html += '<td class="matrix-cell col-total"><span class="avg mono">' + avg(vals) + '</span><span class="n">n=' + vals.length + '</span></td>';
+    });
+    const grand = avg(withDur.map(r => r.duration));
+    html += '<td class="matrix-cell col-total row-total"><span class="avg mono">' + grand + '</span><span class="n">n=' + withDur.length + '</span></td></tr>';
+    html += "</tbody>";
+
+    table.innerHTML = html;
+    foot.textContent = "Farbintensität = relative Dauer innerhalb dieser Auswahl (dunkler = länger). Zellen mit n=1 sind noch keine verlässlichen Durchschnitte. Ausreißer (< " + OUTLIER_MIN_MINUTES + " min) sind ausgeschlossen.";
+  }
+
+  let tableExpanded = false;
+  let lastVisitRows = [];
+  const TABLE_LIMIT = 12;
+
+  function renderTable(rows) {
+    lastVisitRows = rows;
+    const tbody = document.getElementById("tbody");
+    const toggleBtn = document.getElementById("tableToggle");
+    document.getElementById("tableCount").textContent = rows.length + (rows.length === 1 ? " Zeile" : " Zeilen");
+
+    if (!rows.length) {
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="8">Keine Einsätze für diese Auswahl.</td></tr>';
+      toggleBtn.hidden = true;
+      return;
+    }
+
+    const sorted = [...rows].sort((a, b) => {
+      if (a.date !== b.date) return a.date < b.date ? 1 : -1;
+      return a.start < b.start ? 1 : -1;
+    });
+
+    const visible = tableExpanded ? sorted : sorted.slice(0, TABLE_LIMIT);
+
+    if (sorted.length > TABLE_LIMIT) {
+      toggleBtn.hidden = false;
+      toggleBtn.textContent = tableExpanded ? "Weniger anzeigen" : "Alle " + sorted.length + " anzeigen";
+    } else {
+      toggleBtn.hidden = true;
+    }
+
+    tbody.innerHTML = visible.map(r => {
+      const color = "var(" + (techColor.get(r.techName) || "--s1") + ")";
+      const durHtml = r.duration === null
+        ? '<span class="dur-missing"><span class="dot"></span>fehlt</span>'
+        : r.isOutlier
+          ? '<span class="dur-outlier"><span class="mono">' + r.duration + ' min</span><span class="outlier-tag">Ausreißer</span></span>'
+          : '<span class="dur-ok mono">' + r.duration + ' min</span>';
+      return "<tr>" +
+        "<td class=\"mono\">" + escapeHtml(fmtDate(r.date)) + "</td>" +
+        "<td><div class=\"tech-cell\"><span class=\"swatch\" style=\"background:" + color + "\"></span><div class=\"who\"><span class=\"name\">" + escapeHtml(r.techName) + "</span>" +
+          (r.techPhone ? "<a href=\"" + telHref(r.techPhone) + "\">" + escapeHtml(r.techPhone) + "</a>" : "") +
+          "</div></div></td>" +
+        "<td>" + escapeHtml(r.customer) + "</td>" +
+        "<td class=\"addr\">" + escapeHtml(r.address) + "</td>" +
+        "<td><span class=\"type-chip\">" + escapeHtml(r.type || "–") + "</span></td>" +
+        "<td class=\"mono\">" + escapeHtml(fmtTime(r.start)) + "</td>" +
+        "<td class=\"mono\">" + escapeHtml(fmtTime(r.end)) + "</td>" +
+        "<td style=\"text-align:right\">" + durHtml + "</td>" +
+        "</tr>";
+    }).join("");
+  }
+
+  ["fDate", "fTech", "fType"].forEach(id => document.getElementById(id).addEventListener("change", () => {
+    tableExpanded = false;
+    applyFilters();
+  }));
+  document.getElementById("resetFilters").addEventListener("click", () => {
+    document.getElementById("fDate").value = "";
+    document.getElementById("fTech").value = "";
+    document.getElementById("fType").value = "";
+    tableExpanded = false;
+    applyFilters();
+  });
+  document.getElementById("tableToggle").addEventListener("click", () => {
+    tableExpanded = !tableExpanded;
+    renderTable(lastVisitRows);
+  });
+
+  function setLive(state) {
+    const dot = document.getElementById("liveDot");
+    const label = document.getElementById("liveLabel");
+    dot.className = "live-dot " + (state === "live" ? "live" : "idle");
+    label.textContent = state === "live" ? "Live" : state === "error" ? "Getrennt" : "Statisch";
+  }
+
+  function setUpdated(ts, cached) {
+    const el = document.getElementById("lastUpdated");
+    const d = new Date(ts);
+    const time = d.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
+    el.textContent = (cached ? "Zuletzt aktualisiert " : "Aktualisiert ") + time + " Uhr";
+  }
+
+  // ---- Beispiel-Snapshot sofort rendern ----
+  render(parseSheet(FALLBACK_MARKDOWN));
+  setUpdated(Date.now(), false);
+  setLive("idle");
+  document.getElementById("liveLabel").textContent = "Statisch";
+
+  // ---- Live-Daten via mcp-Capability (nur im Claude-Artifact verfügbar) ----
+  (async () => {
+    let claude;
+    try { claude = await window.claude?.use?.("mcp"); } catch (e) { claude = null; }
+    if (!claude) {
+      document.getElementById("autoNotice").hidden = false;
+      return;
+    }
+
+    claude.watchTool(
+      "Google Drive",
+      "read_file_content",
+      { fileId: FILE_ID },
+      (ev) => {
+        if (ev.type === "data") {
+          const content = ev.result?.payload?.fileContent;
+          if (typeof content === "string") {
+            render(parseSheet(content));
+            const stamp = ev.result?.cache?.storedAt || Date.now();
+            setUpdated(stamp, !!ev.result?.cache && !ev.result.cache.revalidating);
+            setLive("live");
+            document.getElementById("autoNotice").hidden = true;
+          }
+        } else if (ev.type === "error") {
+          const code = ev.error?.code;
+          if (code === "needs_reauth" || code === "server_not_connected" || code === "selection_required") {
+            setLive("error");
+            document.getElementById("liveLabel").textContent = "Google Drive nicht verbunden";
+          } else if (code === "not_granted" || code === "capability_disabled") {
+            setLive("idle");
+          } else {
+            setLive("error");
+          }
+        }
+      },
+      { refetchInterval: 60000 }
+    );
+  })();
+</script>
+
+</body>
+</html>
